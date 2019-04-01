@@ -1,6 +1,7 @@
 package com.example.lomovidaudplayer;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 public class MediaItem {
 
@@ -11,6 +12,8 @@ public class MediaItem {
     private int mediaType;
     private String mediaAudThumbnail;
     private Bitmap mediaVidThumbnail;
+
+    final private String UNKNOWN = "<unknown>";
 
     public MediaItem(String mediaTitle, String mediaArtist, String mediaLocation, int mediaType, String mediaAudThumbnail, Bitmap mediaVidThumnail) {
         this.mediaTitle = mediaTitle;
@@ -26,7 +29,11 @@ public class MediaItem {
     }
 
     public String getMediaArtist() {
-        return this.mediaArtist;
+        if (this.mediaArtist == null) {
+            return UNKNOWN;
+        } else {
+            return this.mediaArtist;
+        }
     }
 
     public String getMediaLocation() {

@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -22,11 +23,15 @@ public class MainActivity extends AppCompatActivity {
     final private int READ_EXTERNAL_STORAGE_PERMISSION = 1;
     final private String TAG = "MainActivity";
     private ArrayList<MediaItem> mediaItemList;
+    private ListView listView;
+    private MediaArrayAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        listView = (ListView) findViewById(R.id.media_list);
 
         // Check READ_EXTERNAL_STORAGE permission
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -37,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
 
         mediaItemList = new ArrayList<MediaItem>();
         scanMedia();
+
+        mAdapter = new MediaArrayAdapter(this, mediaItemList);
+        listView.setAdapter(mAdapter);
     }
 
     @Override
@@ -61,14 +69,12 @@ public class MainActivity extends AppCompatActivity {
         Cursor audArtCursor = contentResolver.query(audUriArt, null, null, null, null);
 
         if (audCursor != null && audCursor.moveToFirst()) {
-//            int audId = audCursor.getColumnIndex(MediaStore.Audio.Media._ID);
             int audTitle = audCursor.getColumnIndex(MediaStore.Audio.Media.TITLE);
             int audArtist = audCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST);
             int audData = audCursor.getColumnIndex(MediaStore.Audio.Media.DATA); // Location of file
             int audArt = audArtCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
 
             do {
-//                long currentAudId = audCursor.getLong(audId);
                 String currentAudTitle = audCursor.getString(audTitle);
                 String currentAudArtist = audCursor.getString(audArtist);
                 String currentAudData = audCursor.getString(audData);
@@ -85,14 +91,12 @@ public class MainActivity extends AppCompatActivity {
         Cursor vidCursor = contentResolver.query(vidUri, null, null, null, null);
 
         if (vidCursor != null && vidCursor.moveToFirst()) {
-//            int vidId = vidCursor.getColumnIndex(MediaStore.Video.Media._ID);
             int vidTitle = vidCursor.getColumnIndex(MediaStore.Video.Media.TITLE);
             int vidArtist = vidCursor.getColumnIndex(MediaStore.Video.Media.ARTIST);
             int vidData = vidCursor.getColumnIndex(MediaStore.Video.Media.DATA);
 
 
             do {
-//                long currentVidId = vidCursor.getLong(vidId);
                 String currentVidTitle = vidCursor.getString(vidTitle);
                 String currentVidArtist = vidCursor.getString(vidArtist);
                 String currentVidData = vidCursor.getString(vidData);
