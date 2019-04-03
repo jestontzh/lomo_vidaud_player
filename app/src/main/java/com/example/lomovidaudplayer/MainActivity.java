@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -14,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -24,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     final private String TAG = "MainActivity";
     private ArrayList<MediaItem> mediaItemList;
     private ListView listView;
-    private MediaArrayAdapter mAdapter;
+    private MediaArrayAdapter mediaArrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +43,23 @@ public class MainActivity extends AppCompatActivity {
             Log.i(TAG, "READ_EXTERNAL_STORAGE permission already granted");
         }
 
+        // Scan device for audio and video files. Stored in ArrayList<MediaItem>
         mediaItemList = new ArrayList<MediaItem>();
         scanMedia();
 
-        mAdapter = new MediaArrayAdapter(this, mediaItemList);
-        listView.setAdapter(mAdapter);
+        // Attaches ArrayAdapter to the ListView to populate it with content from ArrayList<MediaItem>
+        mediaArrayAdapter = new MediaArrayAdapter(this, mediaItemList);
+        listView.setAdapter(mediaArrayAdapter);
+
+        // OnClick behaviour for ListView items
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MediaItem clickedItem = (MediaItem) parent.getItemAtPosition(position);
+
+                Log.i(TAG, String.format("Playing: %s | %s", clickedItem.getMediaTitle(), clickedItem.getMediaLocation()));
+            }
+        });
     }
 
     @Override
