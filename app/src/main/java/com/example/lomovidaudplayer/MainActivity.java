@@ -3,6 +3,9 @@ package com.example.lomovidaudplayer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.ContentResolver;
@@ -57,7 +60,15 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MediaItem clickedItem = (MediaItem) parent.getItemAtPosition(position);
 
-                Log.i(TAG, String.format("Playing: %s | %s", clickedItem.getMediaTitle(), clickedItem.getMediaLocation()));
+                String itemTitle = clickedItem.getMediaTitle();
+                String itemLocation = clickedItem.getMediaLocation();
+                Log.i(TAG, String.format("Playing: %s | %s", itemTitle, itemLocation));
+
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.playback_fragment_container, new PlaybackFragment());
+                ft.commit();
+
+                // TODO: how to disable the activity at the back when fragment is out?
             }
         });
     }
