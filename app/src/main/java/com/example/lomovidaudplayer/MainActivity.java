@@ -24,13 +24,14 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PlaybackFragment.PlaybackFragmentListener {
 
     final private int READ_EXTERNAL_STORAGE_PERMISSION = 1;
     final private String TAG = "MainActivity";
     private ArrayList<MediaItem> mediaItemList;
     private ListView listView;
     private MediaArrayAdapter mediaArrayAdapter;
+    private PlaybackFragment playbackFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, String.format("Playing: %s | %s", itemTitle, itemLocation));
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.playback_fragment_container, new PlaybackFragment());
+                playbackFragment = new PlaybackFragment();
+                ft.replace(R.id.playback_fragment_container, playbackFragment);
                 ft.commit();
 
                 // TODO: how to disable the activity at the back when fragment is out?
@@ -85,6 +87,21 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        if (fragment instanceof PlaybackFragment) {
+            playbackFragment = (PlaybackFragment) fragment;
+            playbackFragment.setPlaybackFragmentListener(this);
+        }
+    }
+
+    @Override
+    public void onPlaybackCancelClicked() {
+        getSupportFragmentManager().beginTransaction().remove(playbackFragment).commit();
+        int numFragment = getSupportFragmentManager().getBackStackEntryCount();
+        Log.i(TAG, String.format("Fragment removed. Fragment remaining: %d", numFragment));
     }
 
     private void scanMedia() {
@@ -135,6 +152,5 @@ public class MainActivity extends AppCompatActivity {
             } while(vidCursor.moveToNext());
         }
     }
-
 }
 
