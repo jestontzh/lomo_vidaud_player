@@ -66,11 +66,9 @@ public class MainActivity extends AppCompatActivity implements PlaybackFragment.
                 Log.i(TAG, String.format("Playing: %s | %s", itemTitle, itemLocation));
 
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                playbackFragment = new PlaybackFragment();
+                playbackFragment = PlaybackFragment.newInstance(itemTitle, itemLocation);
                 ft.replace(R.id.playback_fragment_container, playbackFragment);
                 ft.commit();
-
-                // TODO: how to disable the activity at the back when fragment is out?
             }
         });
     }
