@@ -1,10 +1,13 @@
 package com.example.lomovidaudplayer;
 
+import android.content.ContentUris;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
 public class MediaItem {
 
+    private Uri uri;
+    private long mediaId;
     private String mediaTitle;
     private String mediaArtist;
     private String mediaLocation;
@@ -15,13 +18,19 @@ public class MediaItem {
 
     final private String UNKNOWN = "<unknown>";
 
-    public MediaItem(String mediaTitle, String mediaArtist, String mediaLocation, int mediaType, String mediaAudThumbnail, Bitmap mediaVidThumnail) {
+    public MediaItem(Uri uri, long mediaId, String mediaTitle, String mediaArtist, String mediaLocation, int mediaType, String mediaAudThumbnail, Bitmap mediaVidThumnail) {
+        this.uri = uri;
+        this.mediaId = mediaId;
         this.mediaTitle = mediaTitle;
         this.mediaArtist = mediaArtist;
         this.mediaLocation = mediaLocation;
         this.mediaType = mediaType;
         this.mediaAudThumbnail = mediaAudThumbnail;
         this.mediaVidThumbnail = mediaVidThumnail;
+    }
+
+    public long getMediaId() {
+        return this.mediaId;
     }
 
     public String getMediaTitle() {
@@ -50,5 +59,10 @@ public class MediaItem {
 
     public Bitmap getMediaVidThumbnail() {
         return this.mediaVidThumbnail;
+    }
+
+    public Uri getMediaUri() {
+        Uri mediaUri = ContentUris.withAppendedId(uri, this.mediaId);
+        return mediaUri;
     }
 }
